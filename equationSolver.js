@@ -14,10 +14,21 @@ const quadraticEquation = (a, b, c) => {
     : `There are 2 roots\n x1 = ${x1.toFixed(2)}\n x2 = ${x2.toFixed(2)}`;
 };
 
+const FILENAME_POSITION = 3;
+
 const validator = (a, b, c) => {
   const numbers = [ a, b, c ];
   return numbers.every((num => !isNaN(num))) && a !== 0;
 };
+
+const fs = require('fs');
+
+const getNumbersFromFile = (fileName) => {
+  const fileContent = fs.readFileSync(`./${fileName}`, 'utf-8');
+  let [a, b, c] = fileContent.split(' ').map(Number);
+  return {a, b, c};
+}
+
 
 const readline = require('readline');
 
@@ -42,10 +53,8 @@ const getNumbersFromConsole = async () => {
   return { a, b, c };
 };
 
-const FILENAME_POSITION = 3;
-
 (async () => {
-  const { a, b, c } = await getNumbersFromConsole();
+  const { a, b, c } = process.argv.length === FILENAME_POSITION ? getNumbersFromFile(process.argv[2]) : await getNumbersFromConsole();
   const isValid = validator(a, b, c);
 
   if (!isValid) console.log('One of number is not valid. Please enter valid numbers\nNote: a, b and c have to be numbers, a must not be zero');
